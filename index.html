@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAREWELL 2024 - Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden; /* Hide scroll bars */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(to right, #ffa07a, #ff7f50); /* Gradient background */
+    }
+    #video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; 
+        overflow: hidden;
+    }
+    video {
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        filter: blur(10px); /* Apply blur effect */
+    }
+    .login-container {
+        background-color: rgba(255, 255, 255, 0.8); 
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        position: relative; 
+        z-index: 1; 
+    }
+    h1 {
+        font-size: 48px; /* Increased font size */
+        margin-bottom: 20px;
+        color: #333;
+        text-shadow: 2px 2px 2px rgba(0,0,0,0.3); /* Text shadow effect */
+    }
+    h2 {
+        font-size: 30px; /* Increased font size */
+        margin-bottom: 30px;
+        color: #555;
+    }
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        background: transparent;
+        font-size: 20px; /* Increased font size */
+        color: #333;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+    .login-form input[type="text"]::placeholder,
+    .login-form input[type="password"]::placeholder {
+        color: #999;
+    }
+    .login-form input[type="text"]:focus,
+    .login-form input[type="password"]:focus {
+        border-bottom-color: #4CAF50; /* Green underline on focus */
+    }
+    .login-form input[type="submit"] {
+        width: 100%;
+        padding: 15px;
+        background-color: #4CAF50; /* Changed color to Light Green */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 24px; /* Increased font size */
+        transition: background-color 0.3s ease;
+        outline: none;
+    }
+    .login-form input[type="submit"]:hover {
+        background-color: #7CFC00; /* Lighter shade of green on hover */
+    }
+    .signup-links {
+        margin-top: 20px;
+    }
+    .signup-links a {
+        display: inline-block;
+        margin-right: 10px;
+        text-decoration: none;
+        color: #000080;
+        font-size: 18px;
+        transition: color 0.3s ease;
+    }
+    .signup-links a:hover {
+        color: #000080; /* Lighter shade of green on hover */
+    }
+
+    /* Style for the show password checkbox */
+    #showPassword {
+        display: none;
+    }
+
+    /* Style for the label of the show password checkbox */
+    #showPassword + label {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #333;
+        cursor: pointer;
+        user-select: none;
+        z-index: 1;
+    }
+
+    /* Hide password when the show password checkbox is checked */
+    #showPassword:checked + label::before {
+        content: "Hide Password";
+    }
+
+    /* Show password when the show password checkbox is not checked */
+    #showPassword:not(:checked) + label::before {
+        content: "Show Password";
+    }
+</style>
+</head>
+<body>
+<div id="video-container">
+    <video autoplay muted loop>
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+<div class="login-container">
+    <h1>FAREWELL 2024</h1>
+    <h2>Login</h2>
+
+    <form class="login-form" action="/login" method="post">
+        <input type="text" name="username" placeholder="Enter Your ID" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        <input type="checkbox" id="showPassword"> <label for="showPassword"></label>
+        <input type="submit" value="Login">
+    </form>
+ 
+    <div class="error-message" id="error-message"></div>
+    <div class="signup-links">
+        <a href="student_signup" style="text-decoration: none;">Signup as student</a>
+        <a href="teacher_signup" style="text-decoration: none;">Signup as teacher</a>
+    </div>
+</div>
+
+<script>
+document.getElementById("showPassword").addEventListener("change", function() {
+    var passwordInput = document.getElementById("password");
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+    } else {
+        passwordInput.type = "password";
+    }
+});
+
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMessage = urlParams.get('error');
+    if (errorMessage) {
+        document.getElementById("error-message").innerText = errorMessage;
+        document.getElementById("error-message").style.display = "block";
+    }
+};
+</script>
+</body>
+</html>

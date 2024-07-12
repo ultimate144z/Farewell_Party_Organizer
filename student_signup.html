@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Signup</title>
+    <style>
+        body {
+            
+            background-color: #D7E8FB;
+            height: 100vh;
+            background-position: center;
+            color: #034078; /* Darker shade of blue for better contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        html {
+            height: 100%; 
+            margin: 0; 
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        }
+        form {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly more opacity for clarity */
+            padding: 30px; /* More padding for better spacing */
+            border-radius: 12px; /* Smoother border radius */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* Softer shadow */
+            width: 350px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease-in-out; /* Smooth transform on hover */
+        }
+        form:hover {
+            transform: scale(1.03); /* Slight scale to lift the form */
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .form-group {
+            background-image: url('Public/signup.jpg'); 
+            margin-bottom: 20px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            transition: border 0.3s ease-in-out;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus {
+            border-color: #3498db; /* Focus color */
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50; /* Updated button color */
+            color: white; /* Better readability */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker shade on hover */
+        }
+        .group-box {
+            background-image: url('Public/signup.jpg'); 
+            border: 2px solid #ccc;
+            padding: 30px;
+            border-radius: 12px;
+            background: rgba(248, 248, 248, 0.5);
+        }
+        .group-box-title {
+            text-align: center;
+            font-size: 24px;
+            color: #034078;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        input:required:invalid {
+            border-color: red;
+        }
+        input:required:valid {
+            border-color: green;
+        }
+        .volunteer-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #f44336; /* Red for 'No' */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .volunteer-btn.active {
+            background-color: #4CAF50; /* Green for 'Yes' */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Select all inputs you want to include in the validation process
+    const inputs = document.querySelectorAll('#studentId, #name, #email, #password, #dietaryPreference, #totalFamilyMembers');
+    const submitBtn = document.getElementById('submit');
+    const form = document.querySelector('form');
+
+    function checkInputs() {
+        let allFilled = true;
+        inputs.forEach(function(input) {
+            if (input.value === '') {
+                allFilled = false;
+                input.style.borderColor = 'red';
+            } else {
+                input.style.borderColor = ''; 
+            }
+        });
+        submitBtn.disabled = !allFilled;
+    }
+
+    inputs.forEach(input => input.addEventListener('keyup', checkInputs));
+
+    form.addEventListener('submit', function(event) {
+        if (!submitBtn.disabled) {
+            setTimeout(function () {
+            form.reset(); 
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                alert('Registration successful!');
+            }, 1000); 
+        }   
+        });
+    });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signupForm');
+            form.addEventListener('submit', function(event) {
+                const inputs = form.querySelectorAll('input');
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    const errorSpan = input.nextElementSibling;
+                    if (errorSpan && !input.validity.valid) {
+                        errorSpan.textContent = input.title; // Display validation message
+                        isValid = false;
+                    } else if (errorSpan) {
+                        errorSpan.textContent = ''; // Clear previous errors
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault(); // Prevent form submission if any input is invalid
+                }    
+            });
+            const volunteerBtn = document.getElementById('volunteerButton');
+            const volunteerInput = document.getElementById('volunteer');
+
+            volunteerBtn.addEventListener('click', function() {
+                if (volunteerBtn.textContent === 'No') {
+                    volunteerBtn.textContent = 'Yes';
+                    volunteerBtn.classList.add('active');
+                    volunteerInput.value = '1'; // Set to '1' for true
+                } else {
+                    volunteerBtn.textContent = 'No';
+                    volunteerBtn.classList.remove('active');
+                    volunteerInput.value = '0'; // Set to '0' for false
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>   
+    <div class="bg-image"></div>
+    <div class="group-box">
+        <div class="group-box-title">Student Signup</div>
+        <form id="signupForm" action="/register-student" method="post">
+            <div class="form-group">
+                <label for="studentId">Student ID:</label>
+                <input type="text" id="studentId" name="studentId" placeholder="Student ID" required>
+            </div>
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Full Name" pattern="[A-Za-z\s'-]+" title="Name can only contain letters, spaces, hyphens, and apostrophes." required>
+                <span class="error-message" style="color: red;"></span>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Email" pattern=".+@.+\..+" title="Email must contain '@' and a domain name." required>
+                <span class="error-message" style="color: red;"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <label for="dietaryPreference">Dietary Preference:</label>
+                <input type="text" id="dietaryPreference" name="dietaryPreference" placeholder="Dietary Preference">
+            </div>
+            <div class="form-group">
+                <label for="totalFamilyMembers">Total Family Members:</label>
+                <input type="number" id="totalFamilyMembers" name="totalFamilyMembers" placeholder="Total Family Members">
+            </div>
+            <div class="form-group">
+                <label>Volunteer:</label>
+                <button type="button" id="volunteerButton" class="volunteer-btn">No</button>
+                <input type="hidden" id="volunteer" name="volunteer" value="0">
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

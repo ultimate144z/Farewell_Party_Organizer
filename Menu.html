@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Item Voting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: #D7E8FB; /* Very Pale Blue background */
+            color: #000080; /* Navy Blue text */
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #ffffff; /* White background for sidebar */
+            overflow-x: hidden;
+            transition: 0.5s; /* Smooth sliding effect */
+            padding-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* subtle shadow */
+        }
+        .sidebar.collapsed {
+            width: 0;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            height: 100vh;
+            transition: margin-left 0.5s;
+        }
+        .content.collapsed {
+            margin-left: 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: #000080; /* Navy Blue text */
+        }
+        li:hover {
+            background-color: #B0BEC5; /* Light grey for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: #90EE90; /* Light green for button */
+            cursor: pointer;
+            border-radius: 20px;
+            text-align: center;
+            line-height: 40px;
+            z-index: 1000;
+            color: white; /* White text on toggle button */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a; /* Darker green on hover */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #CFD8DC; /* Very light grey line */
+        }
+        th {
+            background-color: #ECEFF1; /* Very light grey for header */
+            color: #000080; /* Navy Blue text */
+        }
+        .menu-container, .top-items-container {
+            background-color: #FFFFFF; /* White background for tables */
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background-color: #FFFFFF; /* White background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #90EE90; /* Light green */
+            color: white; /* White text */
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker green on hover */
+        }
+        input, select {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #B0BEC5;
+            border-radius: 4px;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+    <div class="sidebar" id="sidebar">
+        <h3>Dashboard Menu</h3>
+        <ul>
+            <li><button onclick="location.href='/organizer_dashboard'">Homepage</button></li>
+            <li><button onclick="location.href='/Budget'">Budget</button></li>
+            <li><button onclick="location.href='/Menu'">Menu</button></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1 class="text-3xl font-bold text-center mb-5">Menu Items</h1>
+        <div class="menu-container">
+            <table id="menuTable">
+                <thead>
+                    <tr>
+                        <th>Dish Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Menu items will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="top-items-container">
+            <h2 class="text-2xl font-semibold text-center mb-4">Top Suggested Items</h2>
+            <table id="topItemsTable">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Top items will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+        <div class="form-container">
+            <form id="addItemForm">
+                <label for="itemName">Enter new dish name:</label>
+                <input type="text" id="itemName" name="itemName" required>
+                <label for="itemPrice">Enter price:</label>
+                <input type="number" id="itemPrice" name="itemPrice" required>
+                <button type="submit" id="addItemBtn">Add Dish</button>
+            </form>
+        </div>
+    </div>
+    <script>
+            function toggleSidebar() {
+                var sidebar = document.getElementById("sidebar");
+                var content = document.getElementById("content");
+                sidebar.classList.toggle("collapsed");
+                content.classList.toggle("collapsed");
+            }
+        
+            document.addEventListener('DOMContentLoaded', function() {
+                fetchMenuItems();
+                fetchTopItems(); 
+            });
+        
+            function fetchMenuItems() {
+                fetch('/menu-items')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBody = document.getElementById('menuTable').getElementsByTagName('tbody')[0];
+                        data.forEach(item => {
+                            const row = tableBody.insertRow();
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+        
+                            cell1.textContent = item.name;
+                            cell2.textContent = item.price;
+                        });
+                    })
+                    .catch(error => console.error('Error loading menu items:', error));
+            }
+        
+            function fetchTopItems() {
+                fetch('/top-items')
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableBody = document.getElementById('topItemsTable').getElementsByTagName('tbody')[0];
+                        tableBody.innerHTML = ''; 
+                        data.forEach(item => {
+                            const row = tableBody.insertRow();
+                            const cell1 = row.insertCell(0);
+                            const cell2 = row.insertCell(1);
+                            // const cell3 = row.insertCell(2); 
+
+                            cell1.textContent = item.name;
+                            cell2.textContent = item.votes;
+
+                            // Create a button and append it to the third cell
+                            // const addButton = document.createElement('button');
+                            // addButton.textContent = 'Add';
+                            // addButton.className = 'add-item-btn'; // You can style this class in your CSS
+                            // addButton.onclick = function() { addItemToMenu(item); };
+                            // cell3.appendChild(addButton);
+                        });
+                    })
+                    .catch(error => console.error('Error loading top items:', error));
+            }
+        
+            document.getElementById('addItemForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const itemName = document.getElementById('itemName').value;
+                const itemPrice = document.getElementById('itemPrice').value; 
+                fetch('/add-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: itemName, price: itemPrice })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    document.getElementById('itemName').value = ''; 
+                    document.getElementById('itemPrice').value = ''; // Clear the price field as well
+                    fetchMenuItems(); // Re-fetch menu items to display the newly added item
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to add dish.');
+                });
+            });
+        </script>
+</body>
+</html>

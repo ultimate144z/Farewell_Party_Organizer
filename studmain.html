@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Homepage</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #D7E8FB; /* Very Pale Blue for background */
+            color: #000080; /* Navy Blue for text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .motto {
+            width: 100%;
+            white-space: nowrap; /* Keep the text in one line */
+            overflow: hidden; /* Hide anything that goes out of the box */
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #D7E8FB;
+            padding: 10px 0;
+            font-size: 16px;
+            font-style: italic;
+            font-weight: bold;
+            color: #000080;
+            border-bottom: 1px solid #000080;
+        }
+        .motto span {
+            display: inline-block;
+            padding-left: 100%; /* Start the animation after full container width */
+            animation: marquee 20s linear infinite; /* Infinite and linear animation */
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+        .title {
+            margin-top: 50px; /* Adjusted for visibility */
+            margin-bottom: 20px;
+            font-size: 36px;
+            color: #000080;
+            text-align: center;
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(2px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        }
+        .logo {
+            max-width: 200px; /* Adjust size accordingly */
+            margin: 20px;
+        }
+        .navigation {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        .nav-link {
+            background: #90EE90;
+            color: #000080;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .nav-link:hover, .nav-link:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="motto"><span>"[He] who has taught by the pen--has taught man that which he knew not." (Quran 96:4-5)</span></div>
+    <img src="fastlogo.png" alt="NUCES Logo" class="logo">
+    <!-- <div class="bg-image"></div> -->
+    <!-- <img src="nuces.png" alt="NUCES Logo" class="logo"> -->
+
+    <div class="title">Student Portal</div>
+        <div class="navigation">
+        <h1>Welcome, Student!</h1>
+        <button class="nav-link" onclick="location.href='/menusuggestion'">Menu Suggestion</button>
+        <button class="nav-link" onclick="location.href='/Performcesadding'">Performance</button>
+        <button class="nav-link" onclick="location.href='/Announcementsdis'">Announcements</button>
+        <button class="nav-link" onclick="location.href='/ViewTask'">VeiwTask</button>
+    </div>
+
+</body>
+</html>

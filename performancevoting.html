@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Voting</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #D7E8FB; /* Very Pale Blue for background */
+            color: #000080; /* Navy Blue for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            background: #ffffff; /* White background for the container */
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        .category-title, .performance-title, .form-title {
+            font-size: 22px;
+            color: #000080;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .performance, .add-performance-form {
+            border-bottom: 1px solid #000080;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .performance:hover {
+            background-color: #90EE90;
+        }
+        .performance-details {
+            font-size: 16px;
+        }
+        .vote-button, .submit-button {
+            padding: 5px 10px;
+            background: #90EE90;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+        .vote-count {
+            margin-left: 10px;
+        }
+        .input-field {
+            padding: 5px;
+            margin: 5px;
+            width: 150px;
+        }
+        /* Pop-up Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 300px; /* Maximum width */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            transition: 0.5s; /* Smooth sliding effect */
+            padding-top: 20px;
+        }
+        .sidebar.collapsed {
+            width: 0; /* Collapse to zero width */
+        }
+        .content {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto; /* Allows content to scroll */
+        }
+        .content.collapsed {
+            margin-left: 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #90EE90; /* Light green for buttons */
+            color: #000080; /* Navy blue text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Full width of sidebar */
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker shade of green for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px; /* Adjust this to keep it visible on the edge */
+            width: 40px;
+            height: 40px;
+            background: #90EE90;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded shape */
+            text-align: center;
+            line-height: 40px; /* Align icon vertically */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0; /* Light grey background */
+        }
+        .table-container {
+            background-color: #fff; /* White background for table area */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .welcome-msg {
+            font-size: 24px;
+            color: #344955; /* Adjusted text color for better visibility */
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        } 
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+    <div class="sidebar" id="sidebar">
+        <h3 style="color: #000080; font-size: 28px; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; margin-bottom: 20px;">Dashboard</h3>
+        <ul>
+            <li><button onclick="location.href='/Studentmainpage' ">Homepage</button></li>
+            <li><button onclick="location.href='/menusuggestion' ">Menu</button></li>
+            <li>Analytics</li>
+            <li>Invitations</li>
+            <li><button onclick="location.href='/Announcementsdis' ">Announcements</button></li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="category-title">Performances</div>
+        <div class="form-title">Add New Performance</div>
+        <div class="add-performance-form">
+            <input type="text" id="type" class="input-field" placeholder="Performance Type">
+            <input type="number" id="duration" class="input-field" placeholder="Duration (mins)">
+            <input type="text" id="requirements" class="input-field" placeholder="Special Requirements">
+            <button class="submit-button" onclick="addPerformance()">Add</button>
+        </div>
+        <div id="performances">
+            <!-- Performances will be loaded here -->
+        </div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Thank you for your vote!</p>
+        </div>
+    </div>
+<!-- 
+    function loadPerformances() {
+        const container = document.getElementById('performances');
+        performances.forEach(perf => {
+            container.innerHTML += `
+                <div class="performance">
+                    <div class="performance-details">
+                        <strong>${perf.type}</strong> - Duration: ${perf.duration} mins<br>
+                        Special Requirements: ${perf.specialRequirements}
+                    </div>
+                    <div>
+                        <button class="vote-button" onclick="vote(${perf.id})">Vote</button>
+                        <span id="voteCount${perf.id}" class="vote-count">${perf.votes}</span>
+                    </div>
+                </div>
+            `;
+        });
+    } -->
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            sidebar.classList.toggle("collapsed");
+            content.classList.toggle("collapsed");
+        }
+        function loadPerformances() {
+            fetch('/fetchPerformancesDetails')
+                .then(response => response.json())
+                .then(data => {
+                    const performances = data;
+                    const container = document.getElementById('performances');
+                    container.innerHTML = ''; // Clear previous content
+                    performances.forEach(perf => {
+                        container.innerHTML += `
+                            <div class="performance">
+                                <div class="performance-details">
+                                    <strong>${perf.Type}</strong> - Duration: ${perf.Duration} mins<br>
+                                    Special Requirements: ${perf.SpecialRequirements}
+                                </div>
+                                <div>
+                                    <button class="vote-button" onclick="vote(${perf.ID})">Vote</button>
+                                    <span id="voteCount${perf.ID}" class="vote-count">${perf.Votes}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching performances:', error);
+                });
+        }
+        window.onload = loadPerformances;
+        
+        function addPerformance() {
+            const type = document.getElementById('type').value;
+            const duration = document.getElementById('duration').value;
+            const requirements = document.getElementById('requirements').value;
+
+            fetch('/addperformance', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ type: type, duration: duration, requirements: requirements })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the response message in the popup
+            alert(data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+   // Function to handle voting
+   function vote(performid) {
+    //alert("iam called");
+        // alert(itemId);
+        // Make an AJAX POST request to the server
+        fetch('/performvotercheck', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ performid: performid })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the response message in the popup
+            alert(data.message);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+
+        function showModal() {
+            const modal = document.getElementById('myModal');
+            const span = document.getElementsByClassName("close")[0];
+            modal.style.display = "block";
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

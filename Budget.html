@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Budgets</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            color: #000080; /* Navy Blue text */
+            background-color: #D7E8FB; /* Very Pale Blue background */
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            transition: 0.5s; /* Smooth sliding effect */
+            padding-top: 20px;
+        }
+        .sidebar.collapsed {
+            width: 0; /* Collapse to zero width */
+            padding-top: 20px;
+        }
+        .content {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 20px;
+            height: 100vh;
+            transition: margin-left 0.5s;
+        }
+        .content.collapsed {
+            margin-left: 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #90EE90; /* Light green for buttons */
+            color: #000080; /* Navy blue text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Full width of sidebar */
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker shade of green for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px; /* Adjust this to keep it visible on the edge */
+            width: 40px;
+            height: 40px;
+            background: #90EE90;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded shape */
+            text-align: center;
+            line-height: 40px; /* Align icon vertically */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a;
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+    <div class="sidebar" id="sidebar">
+        <h3 style="color: #fff;">Organizer Dashboard</h3>
+        <ul>
+            <li><button onclick="location.href='/organizer_dashboard.html' ">dashboard</button></li>
+            <li><button onclick="location.href='/Menu' ">Menu</button></li>
+            <li>Analytics</li>
+            <li>Invitations</li>
+            <li><button onclick="location.href='/Budget' ">Budget</button></li>
+        </ul>
+    </div>
+    <div class="content">
+        
+        <h1>Manage Budgets</h1>
+        <form id="budgetForm" action="/submit-budget" method="post">
+            <div>
+                <label for="categoryText">Category:</label>
+                <span id="categoryText"></span>
+                <input type="hidden" id="category" name="category">
+                <input type="hidden" id="hiddenAllocatedAmount" name="newAllocatedAmount">
+            </div><br>
+            <label for="allocatedAmount">Allocated Amount:</label>
+            <input type="number" id="allocatedAmount" name="allocatedAmount" disabled><br>
+            <label for="spentAmount">Spent Amount:</label>
+            <input type="number" id="spentAmount" name="spentAmount" required><br>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            sidebar.classList.toggle("collapsed");
+            content.classList.toggle("collapsed");
+        }
+    
+        // Function to fetch and display category based on organizerID
+        function fetchCategoryAndBudget() {
+            const organizerID = 'ORG003'; // Replace this with the actual organizerID as needed
+            fetch(`/get-category?organizerID=${organizerID}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('category').value = data.category; // Hidden field for form submission
+                    document.getElementById('categoryText').textContent = data.category; // Display category
+                    fetchBudgetDetails(data.category); 
+                })
+                .catch(error => console.error('Error fetching category:', error));
+        }
+    
+        // Function to fetch and display budget details based on category
+        function fetchBudgetDetails(category) {
+            fetch(`/get-budget-details?category=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('allocatedAmount').value = data.allocatedAmount;
+                    document.getElementById('spentAmount').value = data.spentAmount;
+                    // Set the hidden field for allocatedAmount to ensure it is submitted with the form
+                    document.getElementById('hiddenAllocatedAmount').value = data.allocatedAmount;
+                })
+                .catch(error => console.error('Error fetching budget details:', error));
+        }
+
+    
+        // Call fetchCategoryAndBudget when the document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchCategoryAndBudget(); // Initial fetch for category and budget
+        });
+    </script>
+</body>
+</html>

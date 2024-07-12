@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden; /* Prevents horizontal scroll */
+        }
+
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10; /* Keep it behind all content */
+            background: url('signup.jpg') no-repeat center center/cover;
+            filter: blur(8px);
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden; /* Prevents horizontal scroll within the sidebar */
+            transition: 0.5s; /* Smooth sliding effect */
+            box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+        }
+
+        .content {
+            transition: margin-left 0.5s;
+            padding: 20px;
+            margin-left: 250px; /* Initial margin, same as the sidebar width */
+        }
+
+        .sidebar.collapsed {
+            width: 0; /* Collapse to zero width */
+        }
+
+        .content.collapsed {
+            margin-left: 0; /* Expand content to full width when sidebar is collapsed */
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar, .content {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .sidebar:not(.collapsed) {
+                position: absolute;
+                z-index: 5; /* Ensure sidebar is above content */
+            }
+
+            .content {
+                transition: none;
+            }
+        }
+
+
+        /* .sidebar {
+            height: 100vh;
+            width: 250px; 
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            transition: 0.5s; 
+            padding-top: 20px;
+        }
+        .sidebar.collapsed {
+            width: 0; 
+        }
+        .content {
+            margin-left: 250px; 
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto; 
+        }
+        .content.collapsed {
+            margin-left: 0;
+        }
+
+         */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #90EE90; /* Light green for buttons */
+            color: #000080; /* Navy blue text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Full width of sidebar */
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker shade of green for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px; /* Adjust this to keep it visible on the edge */
+            width: 40px;
+            height: 40px;
+            background: #90EE90;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded shape */
+            text-align: center;
+            line-height: 40px; /* Align icon vertically */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0; /* Light grey background */
+        }
+        .table-container {
+            background-color: #fff; /* White background for table area */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .welcome-msg {
+            font-size: 24px;
+            color: #344955; /* Adjusted text color for better visibility */
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        } 
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="sidebar" id="sidebar">
+        <h3 style="color: #000080; font-size: 28px; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; margin-bottom: 20px;">Organizer Dashboard</h3>
+        <ul>
+            <li><button onclick="location.href='/organizer_dashboard' ">Dashboard</button></li>
+            <li><button onclick="location.href='/Menu' ">Menu</button></li>
+            <li><button onclick="location.href='/performance' ">Performance</button></li>
+            <li>Invitations</li>
+            <li><button onclick="location.href='/Budget' ">Budget</button></li>
+        </ul>
+    </div>
+    <div class="content">
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+    <h1>Task Assignment Dashboard</h1>
+    <div>
+        <h2>Volunteers Without Tasks</h2>
+        <table id="volunteersWithoutTasks">
+            <thead>
+                <tr>
+                    <th>Volunteer ID</th>
+                    <th>Student ID</th>
+                    <th>Assign Task</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Volunteer data will be loaded here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2>Assign Task to Volunteer</h2>
+        <form id="taskForm">
+            <input type="text" id="volunteerId" name="volunteerId" placeholder="Enter Volunteer ID" required>
+            <input type="text" id="taskDescription" name="taskDescription" placeholder="Enter Task Description" required>
+            <select id="taskStatus" name="taskStatus">
+                <option value="Not Started">Not Started</option>
+            </select>
+            <button type="submit">Assign Task</button>
+        </form>
+    <div>
+        <h2>Volunteers with Assigned Tasks</h2>
+        <table id="volunteersWithTasks">
+            <thead>
+                <tr>
+                    <th>Assignment ID</th>
+                    <th>Volunteer ID</th>
+                    <th>Task Description</th>
+                    <th>Task Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Task data will be loaded here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    function toggleSidebar() {
+        var sidebar = document.getElementById("sidebar");
+        var content = document.getElementById("content");
+        sidebar.classList.toggle("collapsed");
+        content.classList.toggle("collapsed");
+    }
+    
+    function fetchVolunteersWithoutTasks() {
+        fetch('/api/volunteers/without-tasks')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.getElementById('volunteersWithoutTasks').getElementsByTagName('tbody')[0];
+            data.forEach(volunteer => {
+                let row = table.insertRow();
+                row.insertCell(0).textContent = volunteer.volunteer_ID;
+                row.insertCell(1).textContent = volunteer.student_ID;
+                row.insertCell(2).innerHTML = '<button onclick="assignTaskDialog('+ volunteer.volunteer_ID +')">Assign Task</button>';
+            });
+        })
+        .catch(error => console.error('Error fetching volunteers without tasks:', error));
+    }
+
+    function fetchVolunteersWithTasks() {
+        fetch('/api/volunteers/with-tasks')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.getElementById('volunteersWithTasks').getElementsByTagName('tbody')[0];
+            data.forEach(assignment => {
+                let row = table.insertRow();
+                row.insertCell(0).textContent = assignment.assignment_ID;
+                row.insertCell(1).textContent = assignment.volunteer_ID;
+                row.insertCell(2).textContent = assignment.task_description;
+                row.insertCell(3).textContent = assignment.task_status;
+            });
+        })
+        .catch(error => console.error('Error fetching volunteers with tasks:', error));
+    }
+  
+    document.addEventListener('DOMContentLoaded', function() {
+    const taskForm = document.getElementById('taskForm');
+    fetchVolunteersWithoutTasks();
+    fetchVolunteersWithTasks();
+
+    taskForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        const volunteerId = document.getElementById('volunteerId').value;
+        const taskDescription = document.getElementById('taskDescription').value;
+        const taskStatus = document.getElementById('taskStatus').value;
+
+        fetch('/assignTask', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                volunteerId: volunteerId,
+                taskDescription: taskDescription,
+                taskStatus: taskStatus
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data.message);
+            alert('Task assigned successfully!'); // Display a success message
+            // Optionally, reload or update the DOM to reflect the new task assignment
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to assign task.'); // Display an error message
+        });
+    });
+});
+</script>
+
+</html>

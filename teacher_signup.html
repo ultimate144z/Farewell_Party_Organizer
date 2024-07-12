@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Registration</title>
+    <style>
+        body {
+            background-image: url('Public/signup.jpg'); 
+            background-color: #D7E8FB;
+            height: 100vh;
+            background-position: center;
+            color: #034078;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        .group-box-title {
+            text-align: center;
+            font-size: 24px;
+            color: #034078;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input:required:invalid {
+            border-color: red;
+        }
+        input:required:valid {
+            border-color: green;
+        }
+        .group-box {
+            border: 2px solid #ccc;
+            padding: 30px;
+            border-radius: 12px;
+            background: rgba(248, 248, 248, 0.5); /* Semi-transparent background */
+            width: 350px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            position: absolute; /* Allows the box to be moved */
+            cursor: grab; /* Indicates the box can be dragged */
+            top: 50%; /* Center the box vertically */
+            left: 50%; /* Center the box horizontally */
+            transform: translate(-50%, -50%); /* Adjust position to truly center based on its own size */
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        }        
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('teacherRegistrationForm');
+            const submitBtn = document.querySelector('#submit-btn');
+            const messageDiv = document.querySelector('.message');
+
+            const groupBox = document.querySelector('.group-box');
+
+            let isDragging = false;
+            let dragOffsetX, dragOffsetY;
+
+            groupBox.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                dragOffsetX = e.clientX - groupBox.getBoundingClientRect().left;
+                dragOffsetY = e.clientY - groupBox.getBoundingClientRect().top;
+                groupBox.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    groupBox.style.left = `${e.clientX - dragOffsetX}px`;
+                    groupBox.style.top = `${e.clientY - dragOffsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                groupBox.style.cursor = 'grab';
+            });
+
+            function validateInputs() {
+                let allFilled = true;
+                form.querySelectorAll('input').forEach(input => {
+                    input.style.borderColor = input.value ? 'green' : 'red';
+                    if (!input.value) allFilled = false;
+                });
+                submitBtn.disabled = !allFilled;
+            }
+
+        form.addEventListener('keyup', validateInputs); 
+        form.addEventListener('change', validateInputs);
+
+        form.addEventListener('submit', function(event) {
+        if (!submitBtn.disabled) {
+            event.preventDefault();
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            alert('Registration successful!');
+        }
+        });
+    });
+        </script> 
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="group-box">
+        <div class="group-box-title">Teacher Registration</div>
+        <form id="teacherRegistrationForm" method="post" action="/register-teacher">
+            <div class="form-group">
+                <label for="teacherId">Teacher ID:</label>
+                <input type="text" id="teacherId" name="teacherId" placeholder="Teacher ID" required pattern="^[A-Z]{4}\d{3}$" title="Teacher ID must be in the format ABCD123">
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Full Name" required pattern="[A-Za-z\s'-]+" title="Name can only contain letters, spaces, hyphens, and apostrophes.">
+            </div>
+            <div class="form-group">
+                <label for="numberOfFamilyMembers">Number of Family Members:</label>
+                <input type="number" id="numberOfFamilyMembers" name="numberOfFamilyMembers" placeholder="Number of Family Members" required min="1">
+            </div>
+            <button id="submit-btn" type="submit">Register</button>
+        </form>
+    </div>
+    <div class="message" style="color: red; margin-top: 20px;"></div>
+
+</body>
+</html>

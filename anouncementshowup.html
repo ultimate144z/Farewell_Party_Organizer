@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #D7E8FB; /* Very Pale Blue for background */
+            color: #000080; /* Navy Blue for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            background: #ffffff; /* White background for contrast */
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        .announcement {
+            border-bottom: 1px solid #000080;
+            padding: 12px;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+        .announcement:hover {
+            background-color: #90EE90;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            transition: 0.5s; /* Smooth sliding effect */
+            padding-top: 20px;
+        }
+        .sidebar.collapsed {
+            width: 0; /* Collapse to zero width */
+        }
+        .content {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto; /* Allows content to scroll */
+        }
+        .content.collapsed {
+            margin-left: 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #90EE90; /* Light green for buttons */
+            color: #000080; /* Navy blue text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Full width of sidebar */
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker shade of green for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px; /* Adjust this to keep it visible on the edge */
+            width: 40px;
+            height: 40px;
+            background: #90EE90;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded shape */
+            text-align: center;
+            line-height: 40px; /* Align icon vertically */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0; /* Light grey background */
+        }
+        .table-container {
+            background-color: #fff; /* White background for table area */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .welcome-msg {
+            font-size: 24px;
+            color: #344955; /* Adjusted text color for better visibility */
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        } 
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+    <div class="sidebar" id="sidebar">
+        <h3 style="color: #000080; font-size: 28px; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; margin-bottom: 20px;">Dashboard</h3>
+        <ul>
+            <li><button onclick="location.href='/Studentmainpage' ">Homepage</button></li>
+            <li><button onclick="location.href='/menusuggestion' ">Menu</button></li>
+            <li>Analytics</li>
+            <li>Invitations</li>
+            <li><button onclick="location.href='/Announcementsdis' ">Announcements</button></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h2 style="color: #000080; text-align: center;">Announcements</h2>
+        <div id="announcements" class="announcement-list">
+            <!-- Announcements will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            sidebar.classList.toggle("collapsed");
+            content.classList.toggle("collapsed");
+        }
+        function loadAnnouncements() {
+            fetch('/fetchAnnouncements')
+                .then(response => response.json())
+                .then(data => {
+                    const announcements = data;
+                    const container = document.getElementById('announcements');
+                    announcements.forEach(announcement => {
+                        const elem = document.createElement('div');
+                        elem.className = 'announcement';
+                        elem.textContent = announcement;
+                        container.appendChild(elem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching announcements:', error);
+                });
+        }
+    
+        window.onload = loadAnnouncements;
+    </script>
+</body>
+</html>

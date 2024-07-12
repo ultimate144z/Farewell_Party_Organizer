@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between; /* Adjust the space between the tables */
+            margin: 0 auto;
+            max-width: 1200px; /* Adjust the maximum width of the container */
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+            z-index: 1; /* Ensure it's above the video */
+        }
+        .table-container {
+            flex: 0 0 48%; /* Adjust the width of each table container */
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            transition: background-color 0.3s ease;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; /* Place behind other content */
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(10px); /* Add blur effect */
+        }
+        .add-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .add-button button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .add-button button:hover {
+            background-color: #0056b3;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Adjusted width for sidebar */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            transition: width 0.5s;
+            padding-top: 20px;
+        }
+
+        .sidebar.collapsed {
+            width: 0; /* Collapse sidebar to zero width */
+        }
+
+        .content {
+            margin-left: 250px; /* Set left margin to sidebar width */
+            transition: margin-left 0.5s; /* Smooth transition for margin changes */
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto; /* Allows scrolling */
+        }
+
+        .content.collapsed {
+            margin-left: 0; /* Remove margin when sidebar is collapsed */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #90EE90; /* Light green for buttons */
+            color: #000080; /* Navy blue text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Full width of sidebar */
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker shade of green for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px; /* Adjust this to keep it visible on the edge */
+            width: 40px;
+            height: 40px;
+            background: #90EE90;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded shape */
+            text-align: center;
+            line-height: 40px; /* Align icon vertically */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0; /* Light grey background */
+        }
+        .table-container {
+            background-color: #fff; /* White background for table area */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .welcome-msg {
+            font-size: 24px;
+            color: #344955; /* Adjusted text color for better visibility */
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        } 
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+
+    <div class="sidebar" id="sidebar">
+        <h3 style="color: #000080; font-size: 28px; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; margin-bottom: 20px;">Organizer Dashboard</h3>
+        <ul>
+            <li><button onclick="location.href='/organizer_dashboard' ">Dashboard</button></li>
+            <li><button onclick="location.href='/Menu' ">Menu</button></li>
+            <li><button onclick="location.href='/performance' ">Performance</button></li>
+            <li>Invitations</li>
+            <li><button onclick="location.href='/Budget' ">Budget</button></li>
+        </ul>
+    </div>
+    <div class="content" id="content">
+
+            
+    <div class="video-container">
+        <video autoplay muted loop>
+            <source src="dance.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="container">
+        <div class="table-container">
+            <h1>Performance Data Voting</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Duration</th>
+                        <th>Special Requirements</th>
+                        <th>Votes</th>
+                    </tr>
+                </thead>
+                <tbody id="performance-data"></tbody>
+            </table>
+        </div>
+        <div class="table-container">
+            <h1>Performances</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Timeslot</th>
+                        <th>Venue</th>
+                        <!-- Add more columns as needed -->
+                    </tr>
+                </thead>
+                <tbody id="performances-data2"></tbody>
+            </table>
+            <div class="add-button">
+                <button onclick="addPerformance()">Add Performance</button>
+            </div>
+            <table>
+                <h1>Rehearsal Data</h1>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date/Time</th>
+                    </tr>
+                </thead>
+                <tbody id="rehearsalData">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            sidebar.classList.toggle("collapsed");
+            content.classList.toggle("collapsed");
+        }
+        fetch('/performance-data')
+            .then(response => response.json())
+            .then(data => {
+                const performanceDataDiv = document.getElementById('performance-data');
+                if (data.length === 0) {
+                    performanceDataDiv.innerHTML = '<tr><td colspan="5">No performance voting data available.</td></tr>';
+                } else {
+                    let tableHTML = '';
+                    data.forEach(item => {
+                        tableHTML += `<tr><td>${item.ID}</td><td>${item.Type}</td><td>${item.Duration}</td><td>${item.SpecialRequirements}</td><td>${item.Votes}</td></tr>`;
+                    });
+                    performanceDataDiv.innerHTML = tableHTML;
+                }
+            })
+            .catch(error => console.error('Error fetching performance voting data:', error));
+
+
+        fetch('/performance-data2')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Performances Data:', data); // Log fetched data
+                const performancesDataDiv = document.getElementById('performances-data2'); // Corrected ID here
+                if (data.length === 0) {
+                    performancesDataDiv.innerHTML = '<tr><td colspan="3">No performance data available.</td></tr>'; // Adjusted colspan to match the number of columns in your table
+                } else {
+                    let tableHTML = '';
+                    data.forEach(item => {
+                        tableHTML += `<tr><td>${item.ID}</td><td>${item.Timeslot}</td><td>${item.Venue}</td></tr>`;
+                    });
+                    performancesDataDiv.innerHTML = tableHTML;
+                }
+            })
+            .catch(error => console.error('Error fetching performance data:', error));
+
+            fetch('/rehearsal')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Performances Data:', data); // Log fetched data
+                const performancesDataDiv = document.getElementById('rehearsalData'); // Corrected ID here
+                if (data.length === 0) {
+                    performancesDataDiv.innerHTML = '<tr><td colspan="3">No performance data available.</td></tr>'; // Adjusted colspan to match the number of columns in your table
+                } else {
+                    let tableHTML = '';
+                    data.forEach(item => {
+                        tableHTML += `<tr><td>${item.ID}</td><td>${item.Schedule}</td></tr>`;
+                    });
+                    performancesDataDiv.innerHTML = tableHTML;
+                }
+            })
+
+
+        //requires chnage
+            .catch(error => console.error('Error fetching performance data:', error));
+            document.addEventListener('DOMContentLoaded', function() {
+
+             const addButton = document.querySelector('.add-button button');
+
+    // Add an event listener to the button
+    addButton.addEventListener('click', addPerformance);
+});
+
+function addPerformance() {
+    const id = prompt("Enter ID:");
+    if (id === null || id === "") {
+        alert("ID is required.");
+        return;
+    }
+    console.log('ID:', id);
+
+    const timeslot = prompt("Enter Timeslot:");
+    if (timeslot === null || timeslot === "") {
+        alert("Timeslot is required.");
+        return;
+    }
+    console.log('Timeslot:', timeslot);
+
+    const venue = prompt("Enter Venue:");
+    if (venue === null || venue === "") {
+        alert("Venue is required.");
+        return;
+    }
+    console.log('Venue:', venue);
+
+    // Send data to the server
+    fetch('/add-performance', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id, timeslot, venue }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to add performance');
+        }
+        return response.text();
+    })
+    .then(data => {
+        alert(data); // Show success message
+    })
+    .catch(error => {
+        console.error('Error adding performance:', error);
+        alert('Failed to add performance. Please try again later.');
+    });
+}
+
+
+    </script>
+</body>
+</html>

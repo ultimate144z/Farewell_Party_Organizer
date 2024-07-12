@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Organizer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            color: #000080; /* Navy Blue text */
+            background-color: #D7E8FB; /* Very Pale Blue background */
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+            transition: 0.5s; /* Smooth sliding effect */
+            padding-top: 20px;
+        }
+        .sidebar.collapsed {
+            width: 0; /* Collapse to zero width */
+        }
+        .content {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto; /* Allows content to scroll */
+        }
+        .content.collapsed {
+            margin-left: 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #90EE90; /* Light green for buttons */
+            color: #000080; /* Navy blue text on button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; /* Full width of sidebar */
+        }
+        button:hover {
+            background-color: #76c76a; /* Darker shade of green for hover */
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 10px; /* Adjust this to keep it visible on the edge */
+            width: 40px;
+            height: 40px;
+            background: #90EE90;
+            cursor: pointer;
+            border-radius: 20px; /* Rounded shape */
+            text-align: center;
+            line-height: 40px; /* Align icon vertically */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .toggle-btn:hover {
+            background-color: #76c76a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f0f0f0; /* Light grey background */
+        }
+        .table-container {
+            background-color: #fff; /* White background for table area */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .welcome-msg {
+            font-size: 24px;
+            color: #344955; /* Adjusted text color for better visibility */
+        }
+        .bg-image {
+            background-image: url('signup.jpg');
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: fixed;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        } 
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="toggle-btn" onclick="toggleSidebar()">&#9776;</div>
+    <div class="sidebar" id="sidebar">
+        <h3 style="color: #000080; font-size: 28px; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; margin-bottom: 20px;">Organizer Dashboard</h3>
+        <ul>
+            <li><button onclick="location.href='/organizer_dashboard' ">Dashboard</button></li>
+            <li><button onclick="location.href='/Menu' ">Menu</button></li>
+            <li><button onclick="location.href='/performance' ">Performance</button></li>
+            
+            <li><button onclick="location.href='/AssignTask' ">AssignTask</button></li>
+            <li><button onclick="location.href='/Budget' ">Budget</button></li>
+        </ul>
+    </div>
+    <div class="content" id="content">
+        <div class="table-container">
+            <h1 class="welcome-msg" id="organizerName">Welcome to Your Exquisite Organizer Dashboard</h1>
+            <p>This is your organizer dashboard. Use the menu to navigate through the options.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic rows will be added here -->
+                </tbody>
+            </table>
+            <div class="category-title">Announcements</div>
+            <div class="form-title">Add New Announcements
+            </div>
+            <div class="add-anouncement-form">
+                <input type="text" id="type" class="input-field" placeholder="\Description">
+                <button class="submit-button">Add</button>
+            </div>
+
+    
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            var content = document.getElementById("content");
+            sidebar.classList.toggle("collapsed");
+            content.classList.toggle("collapsed");
+        }
+    </script>
+</body>
+</html>
